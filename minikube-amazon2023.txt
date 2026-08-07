@@ -1,0 +1,178 @@
+=========================================================
+MINIKUBE INSTALLATION ON AMAZON LINUX EC2
+=========================================================
+
+This guide contains two methods:
+
+1. Install and run Minikube as root
+2. Install and run Minikube as ec2-user (Recommended)
+
+=========================================================
+METHOD 1: ROOT USER
+=========================================================
+
+1. Update the system
+
+sudo dnf update -y
+
+2. Install required packages
+
+sudo dnf install -y docker curl wget conntrack
+
+3. Enable Docker
+
+sudo systemctl enable --now docker
+
+4. Verify Docker
+
+docker version
+docker ps
+
+5. Install Minikube
+
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+6. Verify Minikube
+
+minikube version
+
+7. Install kubectl
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+chmod +x kubectl
+
+sudo mv kubectl /usr/local/bin/
+
+kubectl version --client
+
+8. Start Minikube
+
+Since you are logged in as root, Docker driver requires --force.
+
+minikube start --driver=docker --force
+
+9. Verify cluster
+
+kubectl get nodes
+
+Expected Output
+
+NAME        STATUS   ROLES           AGE   VERSION
+minikube    Ready    control-plane   xxm   v1.xx.x
+
+
+=========================================================
+METHOD 2: EC2-USER (RECOMMENDED)
+=========================================================
+
+1. Switch to ec2-user
+
+su - ec2-user
+
+2. Update system
+
+sudo dnf update -y
+
+3. Install Docker
+
+sudo dnf install -y docker curl wget conntrack
+
+4. Enable Docker
+
+sudo systemctl enable --now docker
+
+5. Add ec2-user to Docker group
+
+sudo usermod -aG docker ec2-user
+
+Apply group changes
+
+newgrp docker
+
+6. Verify Docker
+
+docker version
+docker ps
+
+7. Install Minikube
+
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+8. Verify installation
+
+minikube version
+
+9. Install kubectl
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+chmod +x kubectl
+
+sudo mv kubectl /usr/local/bin/
+
+kubectl version --client
+
+10. Start Minikube
+
+minikube start --driver=docker
+
+11. Verify cluster
+
+kubectl get nodes
+
+Expected Output
+
+NAME        STATUS   ROLES           AGE   VERSION
+minikube    Ready    control-plane   xxm   v1.xx.x
+
+
+=========================================================
+USEFUL COMMANDS
+=========================================================
+
+Check Minikube status
+
+minikube status
+
+Stop Minikube
+
+minikube stop
+
+Start Minikube
+
+minikube start --driver=docker
+
+Delete Minikube cluster
+
+minikube delete
+
+View Pods
+
+kubectl get pods -A
+
+View Nodes
+
+kubectl get nodes
+
+Open Kubernetes Dashboard
+
+minikube dashboard
+
+SSH into Minikube
+
+minikube ssh
+
+Check Docker status
+
+systemctl status docker
+
+Restart Docker
+
+sudo systemctl restart docker
+
+=========================================================
